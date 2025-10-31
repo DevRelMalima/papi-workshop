@@ -75,8 +75,10 @@ mod todo_app {
             let caller = self.env().caller();
 
             // ✅ use &caller
-            if let Some(mut todo) = self.todos.get((caller, id)) {
-                todo!()
+            if let Some(mut todo) = self.todos.get((&caller, id)) {
+                todo.completed = !todo.completed;
+                self.todos.insert((&caller, id), &todo);
+                Some(todo.completed)
             } else {
                 None
             }
@@ -84,7 +86,7 @@ mod todo_app {
 
         #[ink(message)]
         pub fn get_todo(&self, id: u64) -> Option<Todo> {
-            todo!()
+            self.todos.get((self.env().caller(), id))
         }
 
         #[ink(message)]
